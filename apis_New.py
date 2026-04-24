@@ -1,16 +1,32 @@
 import requests
 import pandas as pd
-import matplotlib.pyplot as plt
+from IPython.display import Image, display
 
-url = "https://jsonplaceholder.typicode.com/posts/a"
+url = "https://api.nasa.gov/planetary/apod"
+api_key = "PphwRDM8QfevwvwevpBllo9T5IdkXLgnkZEWqTwLSiqrxin"
 
-respuesta = requests.get(url)
+params = {
+    "api_key": api_key,
+    "date": "2002-08-25"
+}
 
-print(respuesta.status_code)
+respuesta = requests.get(url, params=params)
+data = respuesta.json()
+print(data)
 
-if respuesta.status_code == 200:
+display(Image(url=data['url']))
+
+url = "https://api.nasa.gov/DONKI/IPS?"
+
+def obtener_donki(fecha_inicio, fecha_fin):
+    params = {
+        "api_key": api_key,
+        "startDate": fecha_inicio,
+        "endDate": fecha_fin
+    }
+    respuesta = requests.get(url, params=params)
     data = respuesta.json()
-    print(data)
-else:
-    print(f"Error {respuesta.status_code}: no disponemos de esa información")
-    
+    return pd.DataFrame(data)
+
+df = obtener_donki("2023-12-01", "2023-12-31")
+print(df)
